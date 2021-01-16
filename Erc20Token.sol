@@ -7,6 +7,28 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     constructor() Ownable() {
     }
 
+    function transfer(address _to, uint256 _value) public returns (bool) {
+        require(_to != address(0));
+        require(_value <= balances[msg.sender]);
+
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        emit Transfer(msg.sender, _to, _value);
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _value ) positiveValue(_value) public returns (bool) {
+        require(_to != address(0));
+        require(_value <= balances[_from]);
+        require(_value <= allowances[_from][msg.sender]);
+
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        allowances[_from][msg.sender] = allowances[_from][msg.sender].sub(_value);
+        emit Transfer(_from, _to, _value);
+        return true;
+    }
+
     function approve(address _spender, uint256 _value) positiveValue(_value) public returns (bool) {
         allowances[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
@@ -26,15 +48,5 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
         return true;
     }
 
-    function transferFrom(address _from, address _to, uint256 _value ) positiveValue(_value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[_from]);
-        require(_value <= allowances[_from][msg.sender]);
 
-        balances[_from] = balances[_from].sub(_value);
-        balances[_to] = balances[_to].add(_value);
-        allowances[_from][msg.sender] = allowances[_from][msg.sender].sub(_value);
-        emit Transfer(_from, _to, _value);
-        return true;
-    }
 }
