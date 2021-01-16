@@ -5,6 +5,11 @@ contract Erc20TokenInterface {
     mapping(address => mapping(address => uint256)) internal allowances;
     uint256 private totalSupply_;
 
+
+    modifier positiveValue(uint256 _value) {
+        require(_value > 0);
+    }
+
     function totalSupply() public view returns (uint256) {
         return totalSupply_;
     }
