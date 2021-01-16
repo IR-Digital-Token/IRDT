@@ -21,16 +21,15 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
 
     function decreaseApproval(address _spender, uint _subtractedValue) positiveValue(_value) public returns (bool) {
         uint oldValue = allowed[msg.sender][_spender];
-        allowances[msg.sender][_spender] = _subtractedValue > oldValue?0:oldValue.sub(_subtractedValue);
+        allowances[msg.sender][_spender] = _subtractedValue > oldValue ? 0 : oldValue.sub(_subtractedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
         return true;
     }
 
-    function transferFrom(address _from, address _to, uint256 _value ) positiveValue(_value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[_from]);
-        require(_value <= allowances[_from][msg.sender]);
-
+    function transferFrom(address _from, address _to, uint256 _value) validAddress(_from) validAddress(_to)
+    positiveValue(_value) smallerOrLessThan(_value, balances[_from])
+    smallerOrLessThan(_value, allowances[_from][msg.sender])
+    public returns (bool) {
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
         allowances[_from][msg.sender] = allowances[_from][msg.sender].sub(_value);
