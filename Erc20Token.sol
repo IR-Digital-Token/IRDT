@@ -7,10 +7,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     constructor() Ownable() {
     }
 
-    function transfer(address _to, uint256 _value) public returns (bool) {
-        require(_to != address(0));
-        require(_value <= balances[msg.sender]);
-
+    function transfer(address _to, uint256 _value) validAddress(_to) smallerOrLessThan(_value, balances[msg.sender]) public returns (bool) {
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
@@ -18,8 +15,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     }
 
     function transferFrom(address _from, address _to, uint256 _value) validAddress(_from) validAddress(_to)
-    positiveValue(_value) smallerOrLessThan(_value, balances[_from])
-    smallerOrLessThan(_value, allowances[_from][msg.sender])
+    smallerOrLessThan(_value, balances[_from]) smallerOrLessThan(_value, allowances[_from][msg.sender])
     public returns (bool) {
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
