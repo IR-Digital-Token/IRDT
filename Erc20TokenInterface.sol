@@ -5,7 +5,7 @@ import "./TokenContractUtils.sol";
 contract Erc20TokenInterface is TokenContractUtils {
     mapping(address => uint256) internal balances;
     mapping(address => mapping(address => uint256)) internal allowances;
-    uint256 private totalSupply_;
+    uint256 internal totalSupply_;
 
     function totalSupply() public view returns (uint256) {
         return totalSupply_;

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.0;
 
 contract TokenContractInterface {
-    mapping(bytes => bool) signatures;
+    mapping(bytes => bool) internal signatures;
 
     function transferPreSigned(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) public returns (bool);
 
