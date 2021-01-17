@@ -13,7 +13,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
     }
 
 //    before transaction
-    function validTransaction(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) positiveValue(_value) positiveValue(_fee)  isSignatureValid(_signature) validAddress(_to) view public returns (bool) {
+    function validTransaction(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) view public returns (bool) {
         bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         address from = recover(hashedTx, _signature);
         require(from != address(0));

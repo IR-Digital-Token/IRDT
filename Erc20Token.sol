@@ -24,19 +24,19 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
         return true;
     }
 
-    function approve(address _spender, uint256 _value) positiveValue(_value) public returns (bool) {
+    function approve(address _spender, uint256 _value) public returns (bool) {
         allowances[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
-    function increaseApproval(address _spender, uint _addedValue) positiveValue(_value) public returns (bool) {
+    function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
         allowances[msg.sender][_spender] = allowances[msg.sender][_spender].add(_addedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
         return true;
     }
 
-    function decreaseApproval(address _spender, uint _subtractedValue) positiveValue(_value) public returns (bool) {
+    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
         uint oldValue = allowed[msg.sender][_spender];
         allowances[msg.sender][_spender] = _subtractedValue > oldValue ? 0 : oldValue.sub(_subtractedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
