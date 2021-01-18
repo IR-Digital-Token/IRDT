@@ -6,13 +6,15 @@ import "./Erc20Token.sol";
 import "./TokenContractHashing.sol";
 
 contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContractHashing {
+    constructor() Erc20Token() public {
+    }
 
     modifier isSignatureValid(bytes _signature){
         require(signatures[_signature] == false);
         _;
     }
 
-//    before transaction
+    //    before transaction
     function validTransaction(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) view public returns (bool) {
         bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         address from = recover(hashedTx, _signature);

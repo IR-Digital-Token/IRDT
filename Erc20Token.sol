@@ -2,9 +2,14 @@ pragma solidity ^0.4.0;
 
 import "./Ownable.sol";
 import "./Erc20TokenInterface.sol";
+import "./MathLibrary.sol";
 
 contract Erc20Token is Erc20TokenInterface, Ownable {
+    using MathLibrary for uint256;
+
     constructor() Ownable() {
+        balances[msg.sender] = 10000;
+        totalSupply_ = 10000;
     }
 
     function transfer(address _to, uint256 _value) validAddress(_to) smallerOrLessThan(_value, balances[msg.sender]) public returns (bool) {
@@ -37,7 +42,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     }
 
     function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
-        uint oldValue = allowed[msg.sender][_spender];
+        uint oldValue = allowances[msg.sender][_spender];
         allowances[msg.sender][_spender] = _subtractedValue > oldValue ? 0 : oldValue.sub(_subtractedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
         return true;

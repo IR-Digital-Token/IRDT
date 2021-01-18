@@ -3,7 +3,7 @@ pragma solidity ^0.4.0;
 contract TokenContractUtils {
 
     modifier smallerOrLessThan(uint256 _value1, uint256 _value2) {
-        require(_value1 >= _value2);
+        require(_value1 <= _value2);
         _;
     }
 
