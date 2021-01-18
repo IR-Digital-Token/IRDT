@@ -4,8 +4,9 @@ import "./TokenContractInterface.sol";
 import "./TokenContractUtils.sol";
 import "./Erc20Token.sol";
 import "./TokenContractHashing.sol";
+import "./SimpleSignatureRecover.sol";
 
-contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContractHashing {
+contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContractHashing, SimpleSignatureRecover {
     constructor() Erc20Token() public {
     }
 
