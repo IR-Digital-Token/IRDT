@@ -60,7 +60,7 @@ contract SimpleSignatureRecover {
     }
 
     // this contains a pre-filled struct Unit and the signature values for the same struct calculated by sign.js
-    function testVerify(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) public view returns (bool) {
+    function testVerify(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) public view returns (address) {
         Unit memory _msgobj = Unit({
         to : _to,
         value : _value,
