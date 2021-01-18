@@ -60,27 +60,13 @@ contract SimpleSignatureRecover {
     }
 
     // this contains a pre-filled struct Unit and the signature values for the same struct calculated by sign.js
-    function testVerify(bytes signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) public view returns (bool) {
-
+    function testVerify(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) public view returns (bool) {
         Unit memory _msgobj = Unit({
         to : _to,
         value : _value,
         fee : _fee,
         nonce : _nonce
         });
-
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
-        assembly {
-            r := mload(add(signature, 32))
-            s := mload(add(signature, 64))
-            v := byte(0, mload(add(signature, 96)))
-        }
-        if (v < 27) {v += 27;}
-
-        address signer = 0x838E401f13ddBaEf321429979fF73796F5965CEE;
-
         return ecrecover(hashUnit(_msgobj), v, r, s);
     }
 }

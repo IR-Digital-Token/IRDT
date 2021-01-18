@@ -24,9 +24,10 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return fromBalance >= _value.add(_fee);
     }
 
-    function transferPreSigned(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
-        bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
-        address from = recover(hashedTx, _signature);
+    function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
+        address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
+//        bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
+//        address from = recover(hashedTx, _signature);
         require(from != address(0));
         balances[from] = balances[from].sub(_value).sub(_fee);
         balances[_to] = balances[_to].add(_value);
