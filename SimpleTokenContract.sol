@@ -16,7 +16,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
     }
 
     //    before transaction
-    function validTransaction(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) view public returns (bool) {
+    function validTransaction(bytes _signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) view public returns (bool) {
         bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         address from = recover(hashedTx, _signature);
         require(from != address(0));
@@ -24,7 +24,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return fromBalance >= _value.add(_fee);
     }
 
-    function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
+    function transferPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -32,14 +32,14 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         balances[from] = (balances[from].sub(_value)).sub(_fee);
         balances[_to] = balances[_to].add(_value);
         balances[msg.sender] = balances[msg.sender].add(_fee);
-        // signatures[_signature] = true;
+        signatures[_signature] = true;
         Transfer(from, _to, _value);
         Transfer(from, msg.sender, _fee);
         TransferPreSigned(from, _to, msg.sender, _value, _fee);
         return true;
     }
 
-    function approvePreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_spender) public returns (bool){
+    function approvePreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -54,7 +54,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function increaseApprovalPreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _addedValue, uint256 _fee, uint256 _nonce) validAddress(_spender) public returns (bool){
+    function increaseApprovalPreSigned(bytes _signature, bytes signature, bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _addedValue, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -69,7 +69,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function decreaseApprovalPreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _subtractedValue, uint256 _fee, uint256 _nonce) validAddress(_spender) public returns (bool){
+    function decreaseApprovalPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _subtractedValue, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -85,10 +85,10 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function transferFromPreSigned(bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
+    function transferFromPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
-        address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
+        address spender = testVerify(s, r, v, _to, _value, _fee, _nonce);
         require(spender != address(0));
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
