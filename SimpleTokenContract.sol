@@ -39,52 +39,6 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function approvePreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
-        // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
-        // address from = recover(hashedTx, _signature);
-        address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
-        require(from != address(0));
-        allowances[from][_spender] = _value;
-        balances[from] = balances[from].sub(_fee);
-        balances[msg.sender] = balances[msg.sender].add(_fee);
-        signatures[_signature] = true;
-        Approval(from, _spender, _value);
-        Transfer(from, msg.sender, _fee);
-        ApprovalPreSigned(from, _spender, msg.sender, _value, _fee);
-        return true;
-    }
-
-    function increaseApprovalPreSigned(bytes _signature, bytes signature, bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _addedValue, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
-        // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
-        // address from = recover(hashedTx, _signature);
-        address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
-        require(from != address(0));
-        allowances[from][_spender] = allowances[from][_spender].add(_addedValue);
-        balances[from] = balances[from].sub(_fee);
-        balances[msg.sender] = balances[msg.sender].add(_fee);
-        signatures[_signature] = true;
-        Approval(from, _spender, allowances[from][_spender]);
-        Transfer(from, msg.sender, _fee);
-        ApprovalPreSigned(from, _spender, msg.sender, allowances[from][_spender], _fee);
-        return true;
-    }
-
-    function decreaseApprovalPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _subtractedValue, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
-        // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
-        // address from = recover(hashedTx, _signature);
-        address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
-        require(from != address(0));
-        uint oldValue = allowances[from][_spender];
-        allowances[msg.sender][_spender] = _subtractedValue > oldValue ? 0 : oldValue.sub(_subtractedValue);
-        balances[from] = balances[from].sub(_fee);
-        balances[msg.sender] = balances[msg.sender].add(_fee);
-        signatures[_signature] = true;
-        Approval(from, _spender, _subtractedValue);
-        Transfer(from, msg.sender, _fee);
-        ApprovalPreSigned(from, _spender, msg.sender, allowances[from][_spender], _fee);
-        return true;
-    }
-
     function transferFromPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
