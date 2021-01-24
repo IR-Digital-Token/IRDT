@@ -39,7 +39,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function approvePreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
+    function approvePreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_spender) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -54,7 +54,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function increaseApprovalPreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _addedValue, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
+    function increaseApprovalPreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _addedValue, uint256 _fee, uint256 _nonce) validAddress(_spender) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -69,7 +69,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function decreaseApprovalPreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _subtractedValue, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_spender) public returns (bool){
+    function decreaseApprovalPreSigned(bytes32 s, bytes32 r, uint8 v, address _spender, uint256 _subtractedValue, uint256 _fee, uint256 _nonce) validAddress(_spender) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -85,7 +85,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return true;
     }
 
-    function transferFromPreSigned(bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
+    function transferFromPreSigned(bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
