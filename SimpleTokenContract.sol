@@ -11,7 +11,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
     }
 
     modifier isSignatureValid(bytes _signature){
-        require(signatures[_signature] == false);
+//        require(signatures[_signature] == false);
         _;
     }
 
@@ -24,7 +24,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return fromBalance >= _value.add(_fee);
     }
 
-    function transferPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
+    function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -32,14 +32,14 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         balances[from] = (balances[from].sub(_value)).sub(_fee);
         balances[_to] = balances[_to].add(_value);
         balances[msg.sender] = balances[msg.sender].add(_fee);
-        signatures[_signature] = true;
+//        signatures[_signature] = true;
         Transfer(from, _to, _value);
         Transfer(from, msg.sender, _fee);
         TransferPreSigned(from, _to, msg.sender, _value, _fee);
         return true;
     }
 
-    function transferFromPreSigned(bytes _signature, bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) isSignatureValid(_signature) validAddress(_to) public returns (bool){
+    function transferFromPreSigned(bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
         address spender = testVerify(s, r, v, _to, _value, _fee, _nonce);
@@ -49,7 +49,7 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         allowances[_from][spender] = allowances[_from][spender].sub(_value);
         balances[spender] = balances[spender].sub(_fee);
         balances[msg.sender] = balances[msg.sender].add(_fee);
-        signatures[_signature] = true;
+//        signatures[_signature] = true;
         Transfer(_from, _to, _value);
         Transfer(spender, msg.sender, _fee);
         return true;
