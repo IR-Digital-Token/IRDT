@@ -24,9 +24,14 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         return fromBalance >= _value.add(_fee);
     }
 
-    function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
+    function transferPreSigned(string signature, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
         // bytes32 hashedTx = transferPreSignedHashing(address(this), _to, _value, _fee, _nonce);
         // address from = recover(hashedTx, _signature);
+
+        bytes32 r = bytes32(substring(signature, 0, 64));
+        bytes32 s = bytes32(substring(signature, 64, 128));
+        uint8 v = bytes32(substring(signature, 128, 130));
+
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         require(from != address(0));
         balances[from] = (balances[from].sub(_value)).sub(_fee);
@@ -37,6 +42,15 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, TokenContrac
         Transfer(from, msg.sender, _fee);
         TransferPreSigned(from, _to, msg.sender, _value, _fee);
         return true;
+    }
+
+    function substring(string str, uint startIndex, uint endIndex) constant returns (string) {
+        bytes memory strBytes = bytes(str);
+        bytes memory result = new bytes(endIndex-startIndex);
+        for(uint i = startIndex; i < endIndex; i++) {
+            result[i-startIndex] = strBytes[i];
+        }
+        return string(result);
     }
 
     function transferFromPreSigned(bytes32 s, bytes32 r, uint8 v, address _from, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
