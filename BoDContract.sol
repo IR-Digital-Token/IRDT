@@ -8,6 +8,7 @@ contract BoDContract {
         for (uint i = 0; i < BoDAddresses.length; i++) {
             if (authority == BoDAddresses[i]) {
                 isBoD = true;
+                break;
             }
         }
         require(isBoD);
@@ -19,6 +20,7 @@ contract BoDContract {
         for (uint i = 0; i < BoDAddresses.length; i++) {
             if (addr == BoDAddresses[i]) {
                 flag = false;
+                break;
             }
         }
         require(flag);
