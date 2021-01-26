@@ -1,8 +1,15 @@
 pragma solidity ^0.4.0;
 
-contract BoDContract {
+import "./Erc20Token.sol";
+
+contract BoDContract is Erc20Token {
     address[] BoDAddresses;
+
     event AuthorityTransfer(address indexed from, address indexed to);
+
+    mapping(address => uint256) mintToken;
+
+    uint8 mintTokenRequests = 0;
 
     struct TransformObject {
         uint8 transformCounter;
@@ -26,7 +33,7 @@ contract BoDContract {
         }
         transformObject.transformCounter = transformObject.transformCounter.add(1);
 
-        if(transformObject.transformCounter==BoDAddresses.length-1){
+        if (transformObject.transformCounter == BoDAddresses.length - 1) {
             transform(from, to);
             transformObject.transformCounter = 0;
         }
@@ -45,6 +52,53 @@ contract BoDContract {
         AuthorityTransfer(from, to);
         return true;
     }
+
+    function mintRequest(address from, uint256 value) isAuthority(from) public returns (bool){
+        require(value > 0);
+        mintToken[from] = value;
+        uint8 requestsCount = getCountDifferentRequests();
+        uint8 acceptableVoteCount = BoDAddresses.length;
+        if (requestsCount == acceptableVoteCount) {
+            uint256 totalTokenToGenerate = getTotalTokenToGenerate();
+            uint256 meanTokenToGenerate = totalTokenToGenerate.div(acceptableVoteCount);
+            totalSupply_ = totalSupply_.add(meanTokenToGenerate);
+            balances[BoDAddresses[0]] = balances[BoDAddresses[0]].add(meanTokenToGenerate);
+            clearMintToken();
+        }
+
+        return true;
+    }
+
+    function clearMintToken() private returns (bool){
+        for (uint i = 0; i < BoDAddresses.length; i++) {
+            address addr = BoDAddresses[i];
+            mintToken[addr] = 0;
+        }
+        return true;
+    }
+
+
+    function getCountDifferentRequests() private returns (uint8){
+        uint8 result = 0;
+        for (uint i = 0; i < BoDAddresses.length; i++) {
+            address addr = BoDAddresses[i];
+            if (mintToken[addr] > 0) {
+                result = result.add(1);
+            }
+        }
+        return result;
+    }
+
+    function getTotalTokenToGenerate() private returns (uint256){
+        uint256 result = 0;
+        for (uint i = 0; i < BoDAddresses.length; i++) {
+            address addr = BoDAddresses[i];
+            result = result.add(mintToken[addr]);
+        }
+
+        return result;
+    }
+
 
     modifier isAuthority(address authority) {
         bool isBoD = false;
@@ -69,10 +123,6 @@ contract BoDContract {
         require(flag);
         _;
     }
-
-
-
-
 
 
 }
