@@ -2,8 +2,12 @@ pragma solidity ^0.4.0;
 
 import "./Erc20Token.sol";
 import "./SimpleTokenContract.sol";
+import "./MathLibrary.sol";
 
 contract BoDContract is SimpleTokenContract {
+    using MathLibrary for uint256;
+
+
     address[] BoDAddresses;
 
     event AuthorityTransfer(address indexed from, address indexed to);
