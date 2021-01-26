@@ -8,7 +8,7 @@ contract BoDContract is SimpleTokenContract {
     using MathLibrary for uint256;
 
 
-    address[] private BoDAddresses;
+    address[] public BoDAddresses;
 
     event AuthorityTransfer(address indexed from, address indexed to);
 
@@ -33,8 +33,7 @@ contract BoDContract is SimpleTokenContract {
         if (transformObject.transformCounter == 0 || transformObject.from != from || transformObject.to != to) {
             transformObject.from = from;
             transformObject.to = to;
-            transformObject.transformCounter = 1;
-            return true;
+            transformObject.transformCounter = 0;
         }
         transformObject.transformCounter = (transformObject.transformCounter).add(1);
 
@@ -50,12 +49,12 @@ contract BoDContract is SimpleTokenContract {
         for (uint i = 0; i < BoDAddresses.length; i++) {
             if (from == BoDAddresses[i]) {
                 BoDAddresses[i] = to;
+                emit AuthorityTransfer(from, to);
                 return true;
             }
         }
 
-        AuthorityTransfer(from, to);
-        return true;
+        return false;
     }
 
     function mintRequest(uint256 value) isAuthority(msg.sender) public returns (bool){
@@ -128,6 +127,5 @@ contract BoDContract is SimpleTokenContract {
         require(flag);
         _;
     }
-
 
 }
