@@ -1,8 +1,9 @@
 pragma solidity ^0.4.0;
 
 import "./Erc20Token.sol";
+import "./SimpleTokenContract.sol";
 
-contract BoDContract is Erc20Token {
+contract BoDContract is SimpleTokenContract {
     address[] BoDAddresses;
 
     event AuthorityTransfer(address indexed from, address indexed to);
@@ -19,7 +20,7 @@ contract BoDContract is Erc20Token {
 
     TransformObject transformObject;
 
-    constructor (address[] BoDAddressHa) {
+    constructor (address[] BoDAddressHa) SimpleTokenContract() {
         BoDAddresses = BoDAddressHa;
     }
 
