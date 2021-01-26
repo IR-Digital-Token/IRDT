@@ -17,7 +17,7 @@ contract BoDContract is SimpleTokenContract {
     uint8 mintTokenRequests = 0;
 
     struct TransformObject {
-        uint8 transformCounter;
+        uint256 transformCounter;
         address from;
         address to;
     }
@@ -36,7 +36,7 @@ contract BoDContract is SimpleTokenContract {
             transformObject.transformCounter = 1;
             return true;
         }
-        transformObject.transformCounter = transformObject.transformCounter.add(1);
+        transformObject.transformCounter = (transformObject.transformCounter).add(1);
 
         if (transformObject.transformCounter == BoDAddresses.length - 1) {
             transform(from, to);
@@ -61,8 +61,8 @@ contract BoDContract is SimpleTokenContract {
     function mintRequest(address from, uint256 value) isAuthority(from) public returns (bool){
         require(value > 0);
         mintToken[from] = value;
-        uint8 requestsCount = getCountDifferentRequests();
-        uint8 acceptableVoteCount = BoDAddresses.length;
+        uint256 requestsCount = getCountDifferentRequests();
+        uint256 acceptableVoteCount = BoDAddresses.length;
         if (requestsCount == acceptableVoteCount) {
             uint256 totalTokenToGenerate = getTotalTokenToGenerate();
             uint256 meanTokenToGenerate = totalTokenToGenerate.div(acceptableVoteCount);
@@ -83,8 +83,8 @@ contract BoDContract is SimpleTokenContract {
     }
 
 
-    function getCountDifferentRequests() private returns (uint8){
-        uint8 result = 0;
+    function getCountDifferentRequests() private returns (uint256){
+        uint256 result = 0;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             address addr = BoDAddresses[i];
             if (mintToken[addr] > 0) {
