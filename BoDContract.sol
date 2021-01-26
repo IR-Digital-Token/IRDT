@@ -59,7 +59,7 @@ contract BoDContract {
         return true;
     }
 
-    function transform(address from, address to) public returns (bool){
+    function transform(address from, address to) private returns (bool){
         for (uint i = 0; i < BoDAddresses.length; i++) {
             if (from == BoDAddresses[i]) {
                 BoDAddresses[i] = to;
@@ -68,4 +68,6 @@ contract BoDContract {
         }
         return true;
     }
+
+
 }
