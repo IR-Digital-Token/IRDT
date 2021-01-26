@@ -46,15 +46,19 @@ contract BoDContract is SimpleTokenContract {
     }
 
     function transform(address from, address to) private returns (bool){
+        address[] memory addrs = new address[](BoDAddresses.length);
         for (uint i = 0; i < BoDAddresses.length; i++) {
-            if (from == BoDAddresses[i]) {
-                BoDAddresses[i] = to;
-                emit AuthorityTransfer(from, to);
-                return true;
+            addrs[i] = (BoDAddresses[i]);
+        }
+        for (uint j = 0; j < addrs.length; j++) {
+            if (from == addrs[j]) {
+                addrs[j] = to;
+                break;
             }
         }
-
-        return false;
+        BoDAddresses = addrs;
+        emit AuthorityTransfer(from, to);
+        return true;
     }
 
     function mintRequest(uint256 value) isAuthority(msg.sender) public returns (bool){
@@ -127,5 +131,4 @@ contract BoDContract is SimpleTokenContract {
         require(flag);
         _;
     }
-
 }
