@@ -8,11 +8,11 @@ contract BoDContract is SimpleTokenContract {
     using MathLibrary for uint256;
 
 
-    address[] BoDAddresses;
+    address[] private BoDAddresses;
 
     event AuthorityTransfer(address indexed from, address indexed to);
 
-    mapping(address => uint256) mintToken;
+    mapping(address => uint256) private mintToken;
 
     uint8 mintTokenRequests = 0;
 
@@ -58,9 +58,9 @@ contract BoDContract is SimpleTokenContract {
         return true;
     }
 
-    function mintRequest(address from, uint256 value) isAuthority(from) public returns (bool){
+    function mintRequest(uint256 value) isAuthority(msg.sender) public returns (bool){
         require(value > 0);
-        mintToken[from] = value;
+        mintToken[msg.sender] = value;
         uint256 requestsCount = getCountDifferentRequests();
         uint256 acceptableVoteCount = BoDAddresses.length;
         if (requestsCount == acceptableVoteCount) {
