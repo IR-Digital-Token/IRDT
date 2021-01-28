@@ -10,6 +10,9 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     constructor() Ownable() {
         balances[msg.sender] = 10000;
         totalSupply_ = 10000;
+        _name = "Test Token";
+        _symbol = "WTF";
+        _decimals = 6;
     }
 
     function transfer(address _to, uint256 _value) validAddress(_to) smallerOrLessThan(_value, balances[msg.sender]) public returns (bool) {
@@ -46,5 +49,11 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
         allowances[msg.sender][_spender] = _subtractedValue > oldValue ? 0 : oldValue.sub(_subtractedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
         return true;
+    }
+
+    function burn(uint256 amount) public {
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        totalSupply_ = totalSupply_.sub(amount);
+        emit Transfer(msg.sender, address(0), amount);
     }
 }
