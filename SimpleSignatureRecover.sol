@@ -5,10 +5,9 @@ contract SimpleSignatureRecover {
     struct ContractDomain {
         string name;
         string version;
-        address contAddress;
     }
 
-    ContractDomain contractDomain = ContractDomain("VerifierApp101", '1', 0x8c1eD7e19abAa9f23c476dA86Dc1577F1Ef401f5);
+    ContractDomain contractDomain = ContractDomain("VerifierApp101", '1');
     uint256 constant chainId = 5;
 
     //    string contractName = "VerifierApp101";
@@ -22,14 +21,13 @@ contract SimpleSignatureRecover {
         uint256 nonce;
     }
 
-    string private constant CONTRACT_DOMAIN = "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)";
+    string private constant CONTRACT_DOMAIN = "ContractDomain(string name,string version,uint256 chainId)";
     bytes32 private constant CONTRACT_DOMAIN_TYPEHASH = keccak256(abi.encodePacked(CONTRACT_DOMAIN));
     bytes32 private CONTRACT_DOMAIN_SEPARATOR = keccak256(abi.encode(
             CONTRACT_DOMAIN_TYPEHASH,
             keccak256(contractDomain.name),
             keccak256(contractDomain.version),
-            chainId,
-            contractDomain.contAddress
+            chainId
         ));
 
     string private constant UNIT = "Unit(address to,uint256 value,uint256 fee,uint256 nonce)";
