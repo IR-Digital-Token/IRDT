@@ -14,7 +14,7 @@ contract BoDContract is SimpleTokenContract {
 
     mapping(address => uint256) private mintToken;
 
-    uint8 mintTokenRequests = 0;
+    uint8 mintTokenRequests;
 
     struct TransformObject {
         uint256 transformCounter;

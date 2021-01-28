@@ -8,6 +8,15 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, SimpleSignat
     mapping(bytes32 => bool) public signatures;
     constructor() Erc20Token() SimpleSignatureRecover() public {
     }
+    modifier smallerOrLessThan(uint256 _value1, uint256 _value2) {
+        require(_value1 <= _value2);
+        _;
+    }
+
+    modifier validAddress(address _address) {
+        require(_address != address(0));
+        _;
+    }
 
     //    before transaction
     function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) view public returns (bool) {

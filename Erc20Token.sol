@@ -10,9 +10,9 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     constructor() Ownable() {
         balances[msg.sender] = 1000000;
         totalSupply_ = 1000000;
-        name = "Test Token";
-        symbol = "WTF";
-        decimals = 6;
+        name = "Pooleno";
+        symbol = "IRDT";
+        decimals = 4;
     }
 
     function transfer(address _to, uint256 _value) validAddress(_to) smallerOrLessThan(_value, balances[msg.sender]) public returns (bool) {
