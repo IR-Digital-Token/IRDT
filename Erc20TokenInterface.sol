@@ -6,10 +6,10 @@ contract Erc20TokenInterface is TokenContractUtils {
     mapping(address => uint256) internal balances;
     mapping(address => mapping(address => uint256)) internal allowances;
     uint256 internal totalSupply_;
-    string public _name;
-    string public _symbol;
-    uint8 public _decimals;
-    
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+
     function totalSupply() public view returns (uint256) {
         return totalSupply_;
     }

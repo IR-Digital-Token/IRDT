@@ -8,11 +8,11 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     using MathLibrary for uint256;
 
     constructor() Ownable() {
-        balances[msg.sender] = 10000;
-        totalSupply_ = 10000;
-        _name = "Test Token";
-        _symbol = "WTF";
-        _decimals = 6;
+        balances[msg.sender] = 1000000;
+        totalSupply_ = 1000000;
+        name = "Test Token";
+        symbol = "WTF";
+        decimals = 6;
     }
 
     function transfer(address _to, uint256 _value) validAddress(_to) smallerOrLessThan(_value, balances[msg.sender]) public returns (bool) {
