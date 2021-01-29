@@ -1,10 +1,10 @@
 pragma solidity ^0.4.0;
 
 import "./Erc20Token.sol";
-import "./SimpleTokenContract.sol";
+import "./TokenContractWithTokenFee.sol";
 import "./MathLibrary.sol";
 
-contract Pooleno is SimpleTokenContract {
+contract Pooleno is TokenContractWithTokenFee {
     using MathLibrary for uint256;
 
     address[] public BoDAddresses;
