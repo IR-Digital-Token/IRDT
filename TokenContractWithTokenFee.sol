@@ -1,11 +1,10 @@
 pragma solidity ^0.4.0;
 
-import "./TokenContractInterface.sol";
 import "./Erc20Token.sol";
 import "./SignatureRecover.sol";
 
 contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
-    
+
     mapping(bytes32 => bool) public signatures;
 
     event TransferPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
