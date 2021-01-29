@@ -2,10 +2,14 @@ pragma solidity ^0.4.0;
 
 import "./TokenContractInterface.sol";
 import "./Erc20Token.sol";
-import "./SimpleSignatureRecover.sol";
+import "./SignatureRecover.sol";
 
-contract SimpleTokenContract is TokenContractInterface, Erc20Token, SimpleSignatureRecover {
+contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
+    
     mapping(bytes32 => bool) public signatures;
+
+    event TransferPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
+
     constructor() Erc20Token() SimpleSignatureRecover() public {
     }
     modifier smallerOrLessThan(uint256 _value1, uint256 _value2) {
@@ -18,7 +22,6 @@ contract SimpleTokenContract is TokenContractInterface, Erc20Token, SimpleSignat
         _;
     }
 
-    //    before transaction
     function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) view public returns (bool) {
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         return from != address(0) && !signatures[s] && balances[from] >= _value.add(_fee);

@@ -4,17 +4,13 @@ import "./Erc20Token.sol";
 import "./SimpleTokenContract.sol";
 import "./MathLibrary.sol";
 
-contract BoDContract is SimpleTokenContract {
+contract Pooleno is SimpleTokenContract {
     using MathLibrary for uint256;
 
-
     address[] public BoDAddresses;
-
-    event AuthorityTransfer(address indexed from, address indexed to);
-
     mapping(address => uint256) private mintToken;
-
-    uint8 mintTokenRequests;
+    
+    event AuthorityTransfer(address indexed from, address indexed to);
 
     struct TransformObject {
         uint256 transformCounter;
@@ -24,32 +20,27 @@ contract BoDContract is SimpleTokenContract {
 
     TransformObject transformObject;
 
-    constructor (address[] BoDAddressHa) SimpleTokenContract() {
-        BoDAddresses = BoDAddressHa;
+    constructor (address[] BoDAddress) SimpleTokenContract() {
+        BoDAddresses = BoDAddress;
     }
 
-    function transformAuthority(address from, address to) notInBoD(to) isAuthority(msg.sender) isAuthority(from) public returns (bool) {
+    function transformAuthority(address from, address to) notInBoD(to) isAuthority(msg.sender) isAuthority(from) public {
 
         if (transformObject.transformCounter == 0 || transformObject.from != from || transformObject.to != to) {
             transformObject.from = from;
             transformObject.to = to;
             transformObject.transformCounter = 0;
         }
-        transformObject.transformCounter = (transformObject.transformCounter).add(1);
+        transformObject.transformCounter = transformObject.transformCounter.add(1);
 
         if (transformObject.transformCounter == BoDAddresses.length - 1) {
             transform(from, to);
             transformObject.transformCounter = 0;
         }
-
-        return true;
     }
 
-    function transform(address from, address to) private returns (bool){
-        address[] memory addrs = new address[](BoDAddresses.length);
-        for (uint i = 0; i < BoDAddresses.length; i++) {
-            addrs[i] = (BoDAddresses[i]);
-        }
+    function transform(address from, address to) private{
+        address[] memory addrs = BoDAddresses;
         for (uint j = 0; j < addrs.length; j++) {
             if (from == addrs[j]) {
                 addrs[j] = to;
@@ -58,11 +49,9 @@ contract BoDContract is SimpleTokenContract {
         }
         BoDAddresses = addrs;
         emit AuthorityTransfer(from, to);
-        return true;
     }
 
-    function mintRequest(uint256 value) isAuthority(msg.sender) public returns (bool){
-        require(value > 0);
+    function mintRequest(uint256 value) isAuthority(msg.sender) public{
         mintToken[msg.sender] = value;
         uint256 requestsCount = getCountDifferentRequests();
         uint256 acceptableVoteCount = BoDAddresses.length;
@@ -71,10 +60,9 @@ contract BoDContract is SimpleTokenContract {
             uint256 meanTokenToGenerate = totalTokenToGenerate.div(acceptableVoteCount);
             totalSupply_ = totalSupply_.add(meanTokenToGenerate);
             balances[BoDAddresses[0]] = balances[BoDAddresses[0]].add(meanTokenToGenerate);
+            emit Transfer(address(0), BoDAddresses[0], meanTokenToGenerate);
             clearMintToken();
         }
-
-        return true;
     }
 
     function clearMintToken() private returns (bool){
@@ -87,7 +75,7 @@ contract BoDContract is SimpleTokenContract {
 
 
     function getCountDifferentRequests() private returns (uint256){
-        uint256 result = 0;
+        uint256 result;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             address addr = BoDAddresses[i];
             if (mintToken[addr] > 0) {
@@ -98,7 +86,7 @@ contract BoDContract is SimpleTokenContract {
     }
 
     function getTotalTokenToGenerate() private returns (uint256){
-        uint256 result = 0;
+        uint256 result;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             address addr = BoDAddresses[i];
             result = result.add(mintToken[addr]);

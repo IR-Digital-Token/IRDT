@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-contract SimpleSignatureRecover {
+contract SignatureRecover {
 
     uint256 constant chainId = 3;
 

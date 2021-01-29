@@ -10,6 +10,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     constructor() Ownable() {
         balances[msg.sender] = 1000000;
         totalSupply_ = 1000000;
+        emit Transfer(address(0), msg.sender, 1000000);
         name = "Pooleno";
         symbol = "IRDT";
         decimals = 4;
@@ -52,6 +53,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     }
 
     function burn(uint256 amount) public {
+        require(amount != 0);
         balances[msg.sender] = balances[msg.sender].sub(amount);
         totalSupply_ = totalSupply_.sub(amount);
         emit Transfer(msg.sender, address(0), amount);
