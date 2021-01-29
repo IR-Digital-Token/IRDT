@@ -10,7 +10,7 @@ contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
 
     event TransferPreSigned(address indexed from, address indexed to, address indexed delegate, uint256 amount, uint256 fee);
 
-    constructor() Erc20Token() SimpleSignatureRecover() public {
+    constructor() Erc20Token() SignatureRecover() public {
     }
     modifier smallerOrLessThan(uint256 _value1, uint256 _value2) {
         require(_value1 <= _value2);

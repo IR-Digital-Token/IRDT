@@ -20,7 +20,7 @@ contract Pooleno is TokenContractWithTokenFee {
 
     TransformObject transformObject;
 
-    constructor (address[] BoDAddress) SimpleTokenContract() {
+    constructor (address[] BoDAddress) TokenContractWithTokenFee() {
         BoDAddresses = BoDAddress;
     }
 
