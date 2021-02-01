@@ -14,6 +14,13 @@ contract Ownable {
         _;
     }
 
+
+    /**
+    * owner can transfer ownership to '_newOwner'
+    *
+    * Requirement:
+    * - sender(Caller) should be the present owner of contract
+    */
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
         emit OwnershipTransferred(owner, newOwner);

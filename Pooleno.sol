@@ -9,7 +9,7 @@ contract Pooleno is TokenContractWithTokenFee {
 
     address[] public BoDAddresses;
     mapping(address => uint256) private mintToken;
-    
+
     event AuthorityTransfer(address indexed from, address indexed to);
 
     struct TransferObject {
@@ -24,6 +24,13 @@ contract Pooleno is TokenContractWithTokenFee {
         BoDAddresses = BoDAddress;
     }
 
+    /**
+    * sender(caller) vote for transfer `_from' address to '_to' address in board of directors
+    *
+    * Requirement:
+    * - sender(Caller) and _from` should be in the board of directors.
+    * - `_from` shouldn't be in the board of directors
+    */
     function transferAuthority(address from, address to) notInBoD(to) isAuthority(msg.sender) isAuthority(from) public {
 
         if (transferObject.transferCounter == 0 || transferObject.from != from || transferObject.to != to) {
@@ -39,7 +46,11 @@ contract Pooleno is TokenContractWithTokenFee {
         }
     }
 
-    function transfer(address from, address to) private{
+
+    /**
+    * this function call if all of board of directors vote for the transfer `_from`->`_to'.
+    */
+    function transfer(address from, address to) private {
         address[] memory addrs = BoDAddresses;
         for (uint j = 0; j < addrs.length; j++) {
             if (from == addrs[j]) {
@@ -51,7 +62,13 @@ contract Pooleno is TokenContractWithTokenFee {
         emit AuthorityTransfer(from, to);
     }
 
-    function mintRequest(uint256 value) isAuthority(msg.sender) public{
+    /**
+    * sender(caller) create a 'value' token mint request.
+    *
+    * Requirement:
+    * - sender(Caller) should be in the board of directors of contract
+    */
+    function mintRequest(uint256 value) isAuthority(msg.sender) public {
         mintToken[msg.sender] = value;
         uint256 requestsCount = getCountDifferentRequests();
         uint256 acceptableVoteCount = BoDAddresses.length;
@@ -65,6 +82,9 @@ contract Pooleno is TokenContractWithTokenFee {
         }
     }
 
+    /**
+    * remove all mint requests
+    */
     function clearMintToken() private returns (bool){
         for (uint i = 0; i < BoDAddresses.length; i++) {
             address addr = BoDAddresses[i];
@@ -74,6 +94,9 @@ contract Pooleno is TokenContractWithTokenFee {
     }
 
 
+    /**
+    * get the count addresses that create a mint request.
+    */
     function getCountDifferentRequests() private view returns (uint256){
         uint256 result;
         for (uint i = 0; i < BoDAddresses.length; i++) {
@@ -85,6 +108,10 @@ contract Pooleno is TokenContractWithTokenFee {
         return result;
     }
 
+
+    /**
+    * get total token to generate after all parts of board of directors create a mint request
+    */
     function getTotalTokenToGenerate() private view returns (uint256){
         uint256 result;
         for (uint i = 0; i < BoDAddresses.length; i++) {
@@ -96,6 +123,9 @@ contract Pooleno is TokenContractWithTokenFee {
     }
 
 
+    /**
+    * owner can transfer ownership to '_newOwner'
+    */
     modifier isAuthority(address authority) {
         bool isBoD = false;
         for (uint i = 0; i < BoDAddresses.length; i++) {
