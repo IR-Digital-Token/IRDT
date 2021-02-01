@@ -21,6 +21,16 @@ contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
         _;
     }
 
+    function enableTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool) {
+        if(!signatures[s]) {
+            return true;
+        }
+        address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
+        require(from == msg.sender);
+        signatures[s] = false;
+        return true;
+    }
+
     function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) view public returns (bool) {
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         return from != address(0) && !signatures[s] && balances[from] >= _value.add(_fee);
