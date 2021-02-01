@@ -12,34 +12,34 @@ contract Pooleno is TokenContractWithTokenFee {
     
     event AuthorityTransfer(address indexed from, address indexed to);
 
-    struct TransformObject {
-        uint256 transformCounter;
+    struct TransferObject {
+        uint256 transferCounter;
         address from;
         address to;
     }
 
-    TransformObject transformObject;
+    TransferObject transferObject;
 
     constructor (address[] BoDAddress) TokenContractWithTokenFee() {
         BoDAddresses = BoDAddress;
     }
 
-    function transformAuthority(address from, address to) notInBoD(to) isAuthority(msg.sender) isAuthority(from) public {
+    function transferAuthority(address from, address to) notInBoD(to) isAuthority(msg.sender) isAuthority(from) public {
 
-        if (transformObject.transformCounter == 0 || transformObject.from != from || transformObject.to != to) {
-            transformObject.from = from;
-            transformObject.to = to;
-            transformObject.transformCounter = 0;
+        if (transferObject.transferCounter == 0 || transferObject.from != from || transferObject.to != to) {
+            transferObject.from = from;
+            transferObject.to = to;
+            transferObject.transferCounter = 0;
         }
-        transformObject.transformCounter = transformObject.transformCounter.add(1);
+        transferObject.transferCounter = transferObject.transferCounter.add(1);
 
-        if (transformObject.transformCounter == BoDAddresses.length - 1) {
-            transform(from, to);
-            transformObject.transformCounter = 0;
+        if (transferObject.transferCounter == BoDAddresses.length - 1) {
+            transfer(from, to);
+            transferObject.transferCounter = 0;
         }
     }
 
-    function transform(address from, address to) private{
+    function transfer(address from, address to) private{
         address[] memory addrs = BoDAddresses;
         for (uint j = 0; j < addrs.length; j++) {
             if (from == addrs[j]) {
