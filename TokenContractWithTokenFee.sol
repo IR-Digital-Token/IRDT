@@ -21,6 +21,13 @@ contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
         _;
     }
 
+
+    /**
+    * remove the specific signature from the used signature
+    *
+    * Requirement:
+    * - sender(Caller) should be signer of that specific signature
+    */
     function enableTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool) {
         if(!signatures[s]) {
             return true;
@@ -31,11 +38,25 @@ contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
         return true;
     }
 
+    /**
+    * check if the transferPreSigned is valid or not!?
+    *
+    * Requirement:
+    * - '_to' can not be zero address.
+    */
     function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) view public returns (bool) {
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         return from != address(0) && !signatures[s] && balances[from] >= _value.add(_fee);
     }
 
+
+    /**
+    * submit the transferPreSigned
+    *
+    * Requirement:
+    * - '_to' can not be zero address.
+    * signature must be unused
+    */
     function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
         require(signatures[s] == false);
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
