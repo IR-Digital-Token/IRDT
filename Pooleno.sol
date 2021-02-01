@@ -20,7 +20,7 @@ contract Pooleno is TokenContractWithTokenFee {
 
     TransferObject transferObject;
 
-    constructor (address[] BoDAddress) TokenContractWithTokenFee() {
+    constructor (address[] BoDAddress) TokenContractWithTokenFee() public {
         BoDAddresses = BoDAddress;
     }
 
@@ -74,7 +74,7 @@ contract Pooleno is TokenContractWithTokenFee {
     }
 
 
-    function getCountDifferentRequests() private returns (uint256){
+    function getCountDifferentRequests() private view returns (uint256){
         uint256 result;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             address addr = BoDAddresses[i];
@@ -85,7 +85,7 @@ contract Pooleno is TokenContractWithTokenFee {
         return result;
     }
 
-    function getTotalTokenToGenerate() private returns (uint256){
+    function getTotalTokenToGenerate() private view returns (uint256){
         uint256 result;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             address addr = BoDAddresses[i];
