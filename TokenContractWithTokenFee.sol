@@ -3,7 +3,7 @@ pragma solidity ^0.4.0;
 import "./Erc20Token.sol";
 import "./SignatureRecover.sol";
 
-contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
+contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
 
     mapping(bytes32 => bool) public signatures;
 
@@ -22,7 +22,7 @@ contract TokenContractWithTokenFee is  Erc20Token, SignatureRecover {
     }
 
     function enableTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool) {
-        if(!signatures[s]) {
+        if (!signatures[s]) {
             return true;
         }
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
