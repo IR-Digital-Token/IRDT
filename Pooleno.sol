@@ -50,7 +50,7 @@ contract Pooleno is TokenContractWithTokenFee {
     /**
     * this function call if all of board of directors vote for the transfer `_from`->`_to'.
     */
-    function transfer(address from, address to) private{
+    function transfer(address from, address to) private {
         address[] memory addrs = BoDAddresses;
         for (uint j = 0; j < addrs.length; j++) {
             if (from == addrs[j]) {
@@ -68,7 +68,7 @@ contract Pooleno is TokenContractWithTokenFee {
     * Requirement:
     * - sender(Caller) should be in the board of directors of contract
     */
-    function mintRequest(uint256 value) isAuthority(msg.sender) public{
+    function mintRequest(uint256 value) isAuthority(msg.sender) public {
         mintToken[msg.sender] = value;
         uint256 requestsCount = getCountDifferentRequests();
         uint256 acceptableVoteCount = BoDAddresses.length;
