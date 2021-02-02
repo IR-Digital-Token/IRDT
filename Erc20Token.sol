@@ -41,9 +41,9 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
      * - `_from` must have a balance of at least `_value` .
      * - the sender(caller) must have allowance for `_from`'s tokens of at least `_value`.
      */
-    function transferFrom(address _from, address _to, uint256 _value) validAddress(_from, "_from address is not valid") validAddress(_to, "_to address is not valid")
-    smallerOrLessThan(_value, balances[_from], "_value should be smaller than _from's balance") smallerOrLessThan(_value, allowances[_from][msg.sender], "_value should be smaller than your allowance")
-    public returns (bool) {
+    function transferFrom(address _from, address _to, uint256 _value) validAddress(_from, "_from address is not valid") validAddress(_to, "_to address is not valid") public returns (bool) {
+        require(_value<=allowances[_from][msg.sender], "_value should be smaller than your allowance");
+        require(_value<=balances[_from],"_value should be smaller than _from's balance");
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
         allowances[_from][msg.sender] = allowances[_from][msg.sender].sub(_value);
