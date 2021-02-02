@@ -9,13 +9,13 @@ contract Erc20TokenInterface {
     string public symbol;
     uint8 public decimals;
 
-    modifier smallerOrLessThan(uint256 _value1, uint256 _value2) {
-        require(_value1 <= _value2);
+    modifier smallerOrLessThan(uint256 _value1, uint256 _value2, string errorMessage) {
+        require(_value1 <= _value2, errorMessage);
         _;
     }
 
-    modifier validAddress(address _address) {
-        require(_address != address(0));
+    modifier validAddress(address _address, string errorMessage) {
+        require(_address != address(0), errorMessage);
         _;
     }
 

@@ -11,24 +11,22 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
 
     constructor() Erc20Token() SignatureRecover() public {
     }
-    modifier smallerOrLessThan(uint256 _value1, uint256 _value2) {
-        require(_value1 <= _value2);
+    modifier smallerOrLessThan(uint256 _value1, uint256 _value2, string errorMessage) {
+        require(_value1 <= _value2, errorMessage);
         _;
     }
 
-    modifier validAddress(address _address) {
-        require(_address != address(0));
+    modifier validAddress(address _address, string errorMessage) {
+        require(_address != address(0), errorMessage);
         _;
     }
-
 
     /**
     * burn the specific signature from the signatures
     *
     * Requirement:
     * - sender(Caller) should be signer of that specific signature
-    */
-    function burnTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public {
+    function burnTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to, "_to address is not valid") public {
         require(!signatures[s], "this signature is burned or done before");
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         require(from == msg.sender, "you're not permitted to burn this signature");
@@ -41,7 +39,7 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
     * Requirement:
     * - '_to' can not be zero address.
     */
-    function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) view public returns (bool) {
+    function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to, "_to address is not valid") view public returns (bool) {
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         return from != address(0) && !signatures[s] && balances[from] >= _value.add(_fee);
     }
@@ -54,10 +52,10 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
     * - '_to' can not be zero address.
     * signature must be unused
     */
-    function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to) public returns (bool){
-        require(signatures[s] == false);
+    function transferPreSigned(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to, "_to address is not valid") public returns (bool){
+        require(signatures[s] == false, "signature has been used");
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
-        require(from != address(0));
+        require(from != address(0), "signature is wrong");
         balances[from] = balances[from].sub(_value.add(_fee));
         balances[_to] = balances[_to].add(_value);
         balances[msg.sender] = balances[msg.sender].add(_fee);

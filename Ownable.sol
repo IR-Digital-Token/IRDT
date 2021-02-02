@@ -10,7 +10,7 @@ contract Ownable {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "you're not permitted to call this function");
         _;
     }
 
@@ -22,7 +22,7 @@ contract Ownable {
     * - sender(Caller) should be the present owner of contract
     */
     function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0));
+        require(newOwner != address(0), "newOwner address is not valid");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }

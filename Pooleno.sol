@@ -31,7 +31,7 @@ contract Pooleno is TokenContractWithTokenFee {
     * - sender(Caller) and _from` should be in the board of directors.
     * - `_from` shouldn't be in the board of directors
     */
-    function transferAuthority(address from, address to) notInBoD(to) isAuthority(msg.sender) isAuthority(from) public {
+    function transferAuthority(address from, address to) notInBoD(to, "_to address is already in board of directors") isAuthority(msg.sender, "you are not permitted to vote for transfer") isAuthority(from, "_from address is not in board of directors") public {
 
         if (transferObject.transferCounter == 0 || transferObject.from != from || transferObject.to != to) {
             transferObject.from = from;
@@ -68,7 +68,7 @@ contract Pooleno is TokenContractWithTokenFee {
     * Requirement:
     * - sender(Caller) should be in the board of directors of contract
     */
-    function mintRequest(uint256 value) isAuthority(msg.sender) public {
+    function mintRequest(uint256 value) isAuthority(msg.sender, "you are not permitted to create mint request") public {
         mintToken[msg.sender] = value;
         uint256 requestsCount = getCountDifferentRequests();
         uint256 acceptableVoteCount = BoDAddresses.length;
@@ -126,7 +126,7 @@ contract Pooleno is TokenContractWithTokenFee {
     /**
     * owner can transfer ownership to '_newOwner'
     */
-    modifier isAuthority(address authority) {
+    modifier isAuthority(address authority, string errorMessage) {
         bool isBoD = false;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             if (authority == BoDAddresses[i]) {
@@ -134,11 +134,11 @@ contract Pooleno is TokenContractWithTokenFee {
                 break;
             }
         }
-        require(isBoD);
+        require(isBoD, errorMessage);
         _;
     }
 
-    modifier notInBoD(address addr){
+    modifier notInBoD(address addr, string errorMessage){
         bool flag = true;
         for (uint i = 0; i < BoDAddresses.length; i++) {
             if (addr == BoDAddresses[i]) {
@@ -146,7 +146,7 @@ contract Pooleno is TokenContractWithTokenFee {
                 break;
             }
         }
-        require(flag);
+        require(flag, errorMessage);
         _;
     }
 }

@@ -24,7 +24,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
      * - `_to` cannot be the zero address.
      * - the sender(caller) must have a balance of at least `_value`.
      */
-    function transfer(address _to, uint256 _value) validAddress(_to) smallerOrLessThan(_value, balances[msg.sender]) public returns (bool) {
+    function transfer(address _to, uint256 _value) validAddress(_to, "_to address is not valid") smallerOrLessThan(_value, balances[msg.sender], "transfer value should be smaller than your balance") public returns (bool) {
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
@@ -41,8 +41,8 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
      * - `_from` must have a balance of at least `_value` .
      * - the sender(caller) must have allowance for `_from`'s tokens of at least `_value`.
      */
-    function transferFrom(address _from, address _to, uint256 _value) validAddress(_from) validAddress(_to)
-    smallerOrLessThan(_value, balances[_from]) smallerOrLessThan(_value, allowances[_from][msg.sender])
+    function transferFrom(address _from, address _to, uint256 _value) validAddress(_from, "_from address is not valid") validAddress(_to, "_to address is not valid")
+    smallerOrLessThan(_value, balances[_from], "_value should be smaller than _from's balance") smallerOrLessThan(_value, allowances[_from][msg.sender], "_value should be smaller than your allowance")
     public returns (bool) {
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
@@ -57,7 +57,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address _spender, uint256 _value) validAddress(_spender) public returns (bool) {
+    function approve(address _spender, uint256 _value) validAddress(_spender, "_spender is not valid address") public returns (bool) {
         allowances[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
@@ -71,7 +71,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     *
     * - `spender` cannot be the zero address.
     */
-    function increaseApproval(address _spender, uint _addedValue) validAddress(_spender) public returns (bool) {
+    function increaseApproval(address _spender, uint _addedValue) validAddress(_spender, "_spender is not valid address") public returns (bool) {
         allowances[msg.sender][_spender] = allowances[msg.sender][_spender].add(_addedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
         return true;
@@ -86,7 +86,7 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     * - `_spender` cannot be the zero address.
     * - `_spender` must have allowance for the caller of at least `_subtractedValue`.
     */
-    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
+    function decreaseApproval(address _spender, uint _subtractedValue) validAddress(_spender, "_spender is not valid address") public returns (bool) {
         uint oldValue = allowances[msg.sender][_spender];
         allowances[msg.sender][_spender] = _subtractedValue > oldValue ? 0 : oldValue.sub(_subtractedValue);
         emit Approval(msg.sender, _spender, allowances[msg.sender][_spender]);
@@ -104,8 +104,8 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
     * - `amount` cannot be more than sender(caller)'s balance.
     */
     function burn(uint256 amount) public {
-        require(amount != 0);
-        require(amount <= balances[msg.sender]);
+        require(amount != 0, "amount cannot be zero");
+        require(amount <= balances[msg.sender], "amount to burn is more than the caller's balance");
         balances[msg.sender] = balances[msg.sender].sub(amount);
         totalSupply_ = totalSupply_.sub(amount);
         emit Transfer(msg.sender, address(0), amount);
