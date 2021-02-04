@@ -1,10 +1,10 @@
 pragma solidity ^0.4.0;
 
-import "./Ownable.sol";
+import "./BlackList.sol";
 import "./Erc20TokenInterface.sol";
 import "./MathLibrary.sol";
 
-contract Erc20Token is Erc20TokenInterface, Ownable {
+contract Erc20Token is Erc20TokenInterface, BlackList {
     using MathLibrary for uint256;
 
     constructor() Ownable() {
@@ -110,4 +110,19 @@ contract Erc20Token is Erc20TokenInterface, Ownable {
         totalSupply_ = totalSupply_.sub(amount);
         emit Transfer(msg.sender, address(0), amount);
     }
+    
+    /**
+    * Destroys tokens from `blackUser`, if that account is blacklisted.
+    * Emits a {DestroyedBlackFunds} event.
+    * Requirements:
+    * - `blackUser` should already be isBlackListed.
+    */
+    function destroyBlackFunds (address blackUser) public onlyOwner {
+        require(isBlackListed[blackUser]);
+        uint256 dirtyFunds = balances[blackUser];
+        balances[blackUser] = 0;
+        totalSupply_ = totalSupply_.sub(dirtyFunds);
+        emit DestroyedBlackFunds(blackUser, dirtyFunds);
+    }
 }
+
