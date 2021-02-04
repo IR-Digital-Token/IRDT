@@ -42,6 +42,7 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
     */
     function validTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to, "_to address is not valid") view public returns (bool) {
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
+        require(!isBlackListed[from], "from address is blacklisted");
         return from != address(0) && !signatures[s] && balances[from] >= _value.add(_fee);
     }
 
@@ -57,6 +58,7 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
         require(signatures[s] == false, "signature has been used");
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
         require(from != address(0), "signature is wrong");
+        require(!isBlackListed[from], "from address is blacklisted");
         balances[from] = balances[from].sub(_value.add(_fee));
         balances[_to] = balances[_to].add(_value);
         balances[msg.sender] = balances[msg.sender].add(_fee);
