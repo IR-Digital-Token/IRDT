@@ -1,3 +1,5 @@
+pragma solidity ^0.4.0;
+
 contract BlackList {
 
     mapping (address => bool) public isBlackListed;
