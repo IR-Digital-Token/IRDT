@@ -1,6 +1,8 @@
 pragma solidity ^0.4.0;
 
-contract BlackList {
+import "./Ownable.sol";
+
+contract BlackList is Ownable{
 
     mapping (address => bool) public isBlackListed;
     
@@ -10,26 +12,18 @@ contract BlackList {
 
     event RemovedBlackList(address _user);
     
-    function getBlackListStatus(address addr) public returns (bool) {
+    function getBlackListStatus(address addr) public view returns (bool) {
         return isBlackListed[addr];
     }
     
     function addBlackList (address _evilUser) public onlyOwner {
         isBlackListed[_evilUser] = true;
-        AddedBlackList(_evilUser);
+        emit AddedBlackList(_evilUser);
     }
 
     function removeBlackList (address _clearedUser) public onlyOwner {
         isBlackListed[_clearedUser] = false;
-        RemovedBlackList(_clearedUser);
-    }
-
-    function destroyBlackFunds (address _blackListedUser) public onlyOwner {
-        require(isBlackListed[_blackListedUser]);
-        uint256 dirtyFunds = balanceOf(_blackListedUser);
-        balances[_blackListedUser] = 0;
-        _totalSupply = _totalSupply.sub(dirtyFunds);
-        DestroyedBlackFunds(_blackListedUser, dirtyFunds);
+        emit RemovedBlackList(_clearedUser);
     }
 
 }
