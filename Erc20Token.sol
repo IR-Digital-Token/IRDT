@@ -25,6 +25,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
      * - the sender(caller) must have a balance of at least `_value`.
      */
     function transfer(address _to, uint256 _value) validAddress(_to, "_to address is not valid") smallerOrLessThan(_value, balances[msg.sender], "transfer value should be smaller than your balance") public returns (bool) {
+        require(!isBlackListed[msg.sender], "from address is blacklisted");
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
@@ -44,6 +45,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     function transferFrom(address _from, address _to, uint256 _value) validAddress(_from, "_from address is not valid") validAddress(_to, "_to address is not valid") public returns (bool) {
         require(_value<=allowances[_from][msg.sender], "_value should be smaller than your allowance");
         require(_value<=balances[_from],"_value should be smaller than _from's balance");
+        require(!isBlackListed[_from], "from address is blacklisted");
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
         allowances[_from][msg.sender] = allowances[_from][msg.sender].sub(_value);
