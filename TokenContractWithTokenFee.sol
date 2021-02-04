@@ -26,6 +26,7 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
     *
     * Requirement:
     * - sender(Caller) should be signer of that specific signature
+    */
     function burnTransaction(bytes32 s, bytes32 r, uint8 v, address _to, uint256 _value, uint256 _fee, uint256 _nonce) validAddress(_to, "_to address is not valid") public {
         require(!signatures[s], "this signature is burned or done before");
         address from = testVerify(s, r, v, _to, _value, _fee, _nonce);
