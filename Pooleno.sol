@@ -8,8 +8,9 @@ contract Pooleno is TokenContractWithTokenFee {
     using MathLibrary for uint256;
 
     address[] public BoDAddresses;
+    address public mintAddress;
     mapping(address => uint256) private mintToken;
-
+    
     event AuthorityTransfer(address indexed from, address indexed to);
 
     struct TransferObject {
@@ -22,6 +23,7 @@ contract Pooleno is TokenContractWithTokenFee {
 
     constructor (address[] BoDAddress) TokenContractWithTokenFee() public {
         BoDAddresses = BoDAddress;
+        mintAddress = BoDAddress[0];
     }
 
     /**
@@ -76,8 +78,8 @@ contract Pooleno is TokenContractWithTokenFee {
             uint256 totalTokenToGenerate = getTotalTokenToGenerate();
             uint256 meanTokenToGenerate = totalTokenToGenerate.div(acceptableVoteCount);
             totalSupply_ = totalSupply_.add(meanTokenToGenerate);
-            balances[BoDAddresses[0]] = balances[BoDAddresses[0]].add(meanTokenToGenerate);
-            emit Transfer(address(0), BoDAddresses[0], meanTokenToGenerate);
+            balances[mintAddress] = balances[mintAddress].add(meanTokenToGenerate);
+            emit Transfer(address(0), mintAddress, meanTokenToGenerate);
             clearMintToken();
         }
     }
@@ -92,8 +94,15 @@ contract Pooleno is TokenContractWithTokenFee {
         }
         return true;
     }
-
-
+    
+    /**
+    * change destination of mint address
+    */
+    function changeMintAddress(address addr) public{
+        require(msg.sender == BoDAddresses[0]);
+        mintAddress = addr;
+    }
+    
     /**
     * get the count addresses that create a mint request.
     */
