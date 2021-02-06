@@ -1,10 +1,9 @@
 pragma solidity ^0.4.0;
 
 import "./MathLibrary.sol";
-
+import "./Erc20TokenInterface.sol";
 contract Ownable {
     using MathLibrary for uint256;
-
     address public owner;
     address[] public BoDAddresses;
     
@@ -32,15 +31,8 @@ contract Ownable {
     }
 
 
-
-    /**
-    * owner can transfer ownership to '_newOwner'
-    *
-    * Requirement:
-    * - sender(Caller) should be the present owner of contract
-    */
     function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "newOwner address is not valid");
+        require(newOwner != address(0));
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
@@ -123,6 +115,12 @@ contract Ownable {
         }
         BoDAddresses = addrs;
         emit AuthorityTransfer(from, to);
+    }
+    
+    function removeErc20TokensFromContract(address _token, address to) public isAuthority(msg.sender, "you are not permitted"){
+        Erc20TokenInterface erc20Token = Erc20TokenInterface(_token);
+        uint256 value = erc20Token.balanceOf(address(this));
+        erc20Token.transfer(to,value);
     }
     
     
