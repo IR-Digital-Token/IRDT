@@ -6,7 +6,8 @@ import "./MathLibrary.sol";
 
 contract Erc20Token is Erc20TokenInterface, BlackList {
     using MathLibrary for uint256;
-
+    
+    
     constructor() Ownable() {
         balances[msg.sender] = 1000000;
         totalSupply_ = 1000000;
@@ -120,7 +121,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     * - sender(Caller) should be in the board of directors of contract
     */
     function mint(uint256 value) public {
-        require(msg.sender == mintAccessorAddresses,"you are not permitted to mint");
+        require(msg.sender == mintAccessorAddresses,"you are not permitted to create mint request");
         totalSupply_ = totalSupply_.add(value);
         balances[mintAddress] = balances[mintAddress].add(value);
         emit Transfer(address(0), mintAddress, value);
@@ -137,6 +138,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
         uint256 dirtyFunds = balances[blackUser];
         balances[blackUser] = 0;
         totalSupply_ = totalSupply_.sub(dirtyFunds);
+        emit Transfer(blackUser, address(0), dirtyFunds);
         emit DestroyedBlackFunds(blackUser, dirtyFunds);
     }
 
