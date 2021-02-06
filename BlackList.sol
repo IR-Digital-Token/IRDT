@@ -16,17 +16,17 @@ contract BlackList is Ownable{
         return isBlackListed[addr];
     }
     
-    function addBlackList (address _evilUser) public  onlyAccessor(msg.sender) {
+    function addBlackList (address _evilUser) public  onlyAccessorBlackFunds(msg.sender) {
         isBlackListed[_evilUser] = true;
         emit AddedBlackList(_evilUser);
     }
     
-    function removeBlackList (address _clearedUser) public onlyAccessor(msg.sender){
+    function removeBlackList (address _clearedUser) public onlyAccessorBlackFunds(msg.sender){
         isBlackListed[_clearedUser] = false;
         emit RemovedBlackList(_clearedUser);
     }
     
-    modifier onlyAccessor(address addr){
+    modifier onlyAccessorBlackFunds(address addr){
         require(addr == blackListAccessorAddress, "You are not allowed!");
         _;
     }

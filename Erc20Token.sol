@@ -119,8 +119,8 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     * Requirement:
     * - sender(Caller) should be in the board of directors of contract
     */
-    function mintRequest(uint256 value) public {
-        require(msg.sender == mintAccessorAddresses,"you are not permitted to create mint request");
+    function mint(uint256 value) public {
+        require(msg.sender == mintAccessorAddresses,"you are not permitted to mint");
         totalSupply_ = totalSupply_.add(value);
         balances[mintAddress] = balances[mintAddress].add(value);
         emit Transfer(address(0), mintAddress, value);
