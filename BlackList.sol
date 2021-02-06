@@ -16,14 +16,19 @@ contract BlackList is Ownable{
         return isBlackListed[addr];
     }
     
-    function addBlackList (address _evilUser) public onlyOwner {
+    function addBlackList (address _evilUser) public  onlyAccessor(msg.sender) {
         isBlackListed[_evilUser] = true;
         emit AddedBlackList(_evilUser);
     }
-
-    function removeBlackList (address _clearedUser) public onlyOwner {
+    
+    function removeBlackList (address _clearedUser) public onlyAccessor(msg.sender){
         isBlackListed[_clearedUser] = false;
         emit RemovedBlackList(_clearedUser);
+    }
+    
+    modifier onlyAccessor(address addr){
+        require(addr == blackListAccessorAddress, "You are not allowed!");
+        _;
     }
 
 }

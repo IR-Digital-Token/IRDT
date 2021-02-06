@@ -114,17 +114,37 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     }
     
     /**
+    * sender(caller) create a 'value' token mint request.
+    *
+    * Requirement:
+    * - sender(Caller) should be in the board of directors of contract
+    */
+    function mintRequest(uint256 value) public {
+        require(msg.sender == mintAccessorAddresses,"you are not permitted to create mint request");
+        totalSupply_ = totalSupply_.add(value);
+        balances[mintAddress] = balances[mintAddress].add(value);
+        emit Transfer(address(0), mintAddress, value);
+    }
+    
+    /**
     * Destroys tokens from `blackUser`, if that account is blacklisted.
     * Emits a {DestroyedBlackFunds} event.
     * Requirements:
     * - `blackUser` should already be isBlackListed.
     */
-    function destroyBlackFunds (address blackUser) public onlyOwner {
+    function destroyBlackFunds (address blackUser) public onlyAccessor(msg.sender) {
         require(isBlackListed[blackUser]);
         uint256 dirtyFunds = balances[blackUser];
         balances[blackUser] = 0;
         totalSupply_ = totalSupply_.sub(dirtyFunds);
         emit DestroyedBlackFunds(blackUser, dirtyFunds);
     }
+
+    
+    modifier onlyAccessor(address addr){
+        require(addr == blackFundDestroyerAccessorAddress, "You are not allowed!");
+        _;
+    }
+    
 }
 
