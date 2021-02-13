@@ -8,10 +8,10 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     using MathLibrary for uint256;
     
     constructor() Ownable() internal {
-        balances[mintAddress] = 1500000000;
-        totalSupply_ = 1500000000;
-        emit Transfer(address(0), mintAddress, 1500000000);
-        name = "IR Digital Toman";
+        balances[mintAddress] = 150_000_0000;
+        totalSupply_ = 150_000_0000;
+        emit Transfer(address(0), mintAddress, 150_000_0000);
+        name = "IR Digital Token";
         symbol = "IRDT";
         decimals = 4;
     }
@@ -106,7 +106,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     * - `amount` cannot be more than sender(caller)'s balance.
     */
     function burn(uint256 amount) public {
-        require(amount != 0, "amount cannot be zero");
+        require(amount > 0, "amount cannot be less than zero");
         require(amount <= balances[msg.sender], "amount to burn is more than the caller's balance");
         balances[msg.sender] = balances[msg.sender].sub(amount);
         totalSupply_ = totalSupply_.sub(amount);

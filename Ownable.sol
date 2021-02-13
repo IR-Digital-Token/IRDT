@@ -50,7 +50,7 @@ contract Ownable {
      /**
     * change accessor of mint destination changer
     */
-    function changeAddressMintAccessorAddress(address addr) public{
+    function changeMintDestChangerAddress(address addr) public{
         require(msg.sender == BoDAddresses[1]);
         mintDestChangerAddress = addr;
     }

@@ -4,7 +4,7 @@ import "./Ownable.sol";
 
 contract BlackList is Ownable{
 
-    mapping (address => bool) public isBlackListed;
+    mapping (address => bool) internal isBlackListed;
     
     event DestroyedBlackFunds(address _blackListedUser, uint _balance);
 
