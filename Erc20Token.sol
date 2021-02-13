@@ -8,10 +8,10 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     using MathLibrary for uint256;
     
     constructor() Ownable() internal {
-        balances[msg.sender] = 1000000;
-        totalSupply_ = 1000000;
-        emit Transfer(address(0), msg.sender, 1000000);
-        name = "IR Digital Token";
+        balances[mintAddress] = 1500000000;
+        totalSupply_ = 1500000000;
+        emit Transfer(address(0), mintAddress, 1500000000);
+        name = "IR Digital Toman";
         symbol = "IRDT";
         decimals = 4;
     }
