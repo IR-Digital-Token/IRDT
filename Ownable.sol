@@ -86,7 +86,7 @@ contract Ownable {
     * - sender(Caller) and _from` should be in the board of directors.
     * - `_from` shouldn't be in the board of directors
     */
-    function transferAuthority(uint256 from, address to) notInBoD(to, "_to address is already in board of directors") isAuthority(msg.sender, "you are not permitted to vote for transfer") isAuthority(from, "_from address is not in board of directors") public {
+    function transferAuthority(uint256 from, address to) notInBoD(to, "_to address is already in board of directors") isAuthority(msg.sender, "you are not permitted to vote for transfer") public {
         require(!transferObject.voted[msg.sender]);
         if (BoDAddresses[from] == msg.sender) {
             transferAuth(from, to);
@@ -111,9 +111,10 @@ contract Ownable {
         for (uint j = 0; j < BoDAddresses.length; j++) {
             transferObject.voted[BoDAddresses[j]] = false;
         }
+        emit AuthorityTransfer(BoDAddresses[from], to);
         BoDAddresses[from] = to;
         transferObject.transferCounter = 0;
-        emit AuthorityTransfer(from, to);
+        
     }
 
      /**

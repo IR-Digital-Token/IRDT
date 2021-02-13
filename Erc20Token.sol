@@ -7,12 +7,11 @@ import "./MathLibrary.sol";
 contract Erc20Token is Erc20TokenInterface, BlackList {
     using MathLibrary for uint256;
     
-    
-    constructor() Ownable() {
+    constructor() Ownable() internal {
         balances[msg.sender] = 1000000;
         totalSupply_ = 1000000;
         emit Transfer(address(0), msg.sender, 1000000);
-        name = "IRDigitalToken";
+        name = "IR Digital Token";
         symbol = "IRDT";
         decimals = 4;
     }

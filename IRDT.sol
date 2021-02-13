@@ -2,10 +2,12 @@ pragma solidity ^0.4.0;
 
 import "./Erc20Token.sol";
 import "./TokenContractWithTokenFee.sol";
-import "./MathLibrary.sol";
 
+/**
+ * Website: IRDT.io
+ **/
 contract IRDT is TokenContractWithTokenFee {
-    constructor (address[] memory BoDAddress) TokenContractWithTokenFee() public {
+    constructor (address[] BoDAddress) TokenContractWithTokenFee() public {
         BoDAddresses = BoDAddress;
         mintAccessorAddress = BoDAddress[0];
         mintAddress = BoDAddress[1];
