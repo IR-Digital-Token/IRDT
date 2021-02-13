@@ -8,9 +8,9 @@ contract Pooleno is TokenContractWithTokenFee {
     using MathLibrary for uint256;
     constructor (address[] BoDAddress) TokenContractWithTokenFee() public {
         BoDAddresses = BoDAddress;
-        mintAccessorAddresses = BoDAddress[0];
+        mintAccessorAddress = BoDAddress[0];
         mintAddress = BoDAddress[1];
-        mintDestChangerAddresses = BoDAddress[1];
+        mintDestChangerAddress = BoDAddress[1];
         blackListAccessorAddress = BoDAddress[2];
         blackFundDestroyerAccessorAddress = BoDAddress[3];
     }

@@ -9,8 +9,8 @@ contract Ownable {
     
     address public mintAddress;
     
-    address public mintDestChangerAddresses;
-    address public mintAccessorAddresses;
+    address public mintDestChangerAddress;
+    address public mintAccessorAddress;
     address public blackListAccessorAddress;
     address public blackFundDestroyerAccessorAddress;
 
@@ -30,7 +30,9 @@ contract Ownable {
         
     }
 
-
+    /**
+    * change owner of contract
+    */
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
         emit OwnershipTransferred(owner, newOwner);
@@ -41,16 +43,16 @@ contract Ownable {
     * change destination of mint address
     */
     function changeMintAddress(address addr) public{
-        require(msg.sender == mintDestChangerAddresses);
+        require(msg.sender == mintDestChangerAddress);
         mintAddress = addr;
     }
     
     /**
-    * change accessor of mint
+    * change accessor of mint destination changer
     */
     function changeAddressMintAccessorAddress(address addr) public{
         require(msg.sender == BoDAddresses[1]);
-        mintDestChangerAddresses = addr;
+        mintDestChangerAddress = addr;
     }
     
     /**
@@ -58,7 +60,7 @@ contract Ownable {
     */
     function changeMintAccessorAddress(address addr) public{
         require(msg.sender == BoDAddresses[0]);
-        mintAccessorAddresses = addr;
+        mintAccessorAddress = addr;
     }
     
      /*

@@ -2,7 +2,7 @@ pragma solidity ^0.4.0;
 
 contract SignatureRecover {
 
-    uint256 constant chainId = 3;
+    uint256 constant chainId = 1;
 
 
     struct Unit {
@@ -22,7 +22,7 @@ contract SignatureRecover {
 
     bytes32 private DOMAIN_SEPARATOR = keccak256(abi.encode(
             EIP712_DOMAIN_TYPEHASH,
-            keccak256("Toman"), // string name
+            keccak256("IRDT"), // string name
             keccak256("1"), // string version
             chainId, // uint256 chainId
             this  // address verifyingContract

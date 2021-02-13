@@ -12,7 +12,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
         balances[msg.sender] = 1000000;
         totalSupply_ = 1000000;
         emit Transfer(address(0), msg.sender, 1000000);
-        name = "Pooleno";
+        name = "IRDigitalToken";
         symbol = "IRDT";
         decimals = 4;
     }
@@ -121,7 +121,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     * - sender(Caller) should be in the board of directors of contract
     */
     function mint(uint256 value) public {
-        require(msg.sender == mintAccessorAddresses,"you are not permitted to create mint request");
+        require(msg.sender == mintAccessorAddress,"you are not permitted to create mint request");
         totalSupply_ = totalSupply_.add(value);
         balances[mintAddress] = balances[mintAddress].add(value);
         emit Transfer(address(0), mintAddress, value);
