@@ -56,7 +56,7 @@ contract Ownable {
     }
     
     /**
-    * change accessor of mint
+    * change accessor of mint function
     */
     function changeMintAccessorAddress(address addr) public{
         require(msg.sender == BoDAddresses[0]);
@@ -72,7 +72,7 @@ contract Ownable {
     }
     
      /*
-    * change accessor of blackList
+    * change accessor of blackList destroy fund
     */
     function changeBlackFundAccessorAddress(address addr) public{
         require(msg.sender == BoDAddresses[3]);

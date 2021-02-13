@@ -4,7 +4,7 @@ import "./Erc20Token.sol";
 import "./TokenContractWithTokenFee.sol";
 import "./MathLibrary.sol";
 
-contract Pooleno is TokenContractWithTokenFee {
+contract IRDT is TokenContractWithTokenFee {
     using MathLibrary for uint256;
     constructor (address[] BoDAddress) TokenContractWithTokenFee() public {
         BoDAddresses = BoDAddress;
