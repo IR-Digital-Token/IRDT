@@ -13,11 +13,11 @@ contract Ownable {
     address public mintAccessorAddress;
     address public blackListAccessorAddress;
     address public blackFundDestroyerAccessorAddress;
-
     struct TransferObject {
         uint256 transferCounter;
-        address from;
+        uint256 from;
         address to;
+        mapping(address => bool) voted;
     }
 
     TransferObject transferObject;
@@ -30,7 +30,7 @@ contract Ownable {
         
     }
 
-    /**
+     /**
     * change owner of contract
     */
     function transferOwnership(address newOwner) public onlyOwner {
@@ -39,7 +39,7 @@ contract Ownable {
         owner = newOwner;
     }
     
-    /**
+     /**
     * change destination of mint address
     */
     function changeMintAddress(address addr) public{
@@ -47,7 +47,7 @@ contract Ownable {
         mintAddress = addr;
     }
     
-    /**
+     /**
     * change accessor of mint destination changer
     */
     function changeAddressMintAccessorAddress(address addr) public{
@@ -55,7 +55,7 @@ contract Ownable {
         mintDestChangerAddress = addr;
     }
     
-    /**
+     /**
     * change accessor of mint function
     */
     function changeMintAccessorAddress(address addr) public{
@@ -63,7 +63,7 @@ contract Ownable {
         mintAccessorAddress = addr;
     }
     
-     /*
+     /**
     * change accessor of blackList
     */
     function changeBlackListAccessorAddress(address addr) public{
@@ -71,7 +71,7 @@ contract Ownable {
         blackListAccessorAddress = addr;
     }
     
-     /*
+     /**
     * change accessor of blackList destroy fund
     */
     function changeBlackFundAccessorAddress(address addr) public{
@@ -86,8 +86,9 @@ contract Ownable {
     * - sender(Caller) and _from` should be in the board of directors.
     * - `_from` shouldn't be in the board of directors
     */
-    function transferAuthority(address from, address to) notInBoD(to, "_to address is already in board of directors") isAuthority(msg.sender, "you are not permitted to vote for transfer") isAuthority(from, "_from address is not in board of directors") public {
-        if (from == msg.sender) {
+    function transferAuthority(uint256 from, address to) notInBoD(to, "_to address is already in board of directors") isAuthority(msg.sender, "you are not permitted to vote for transfer") isAuthority(from, "_from address is not in board of directors") public {
+        require(!transferObject.voted[msg.sender]);
+        if (BoDAddresses[from] == msg.sender) {
             transferAuth(from, to);
             return;
         }
@@ -96,29 +97,28 @@ contract Ownable {
             transferObject.to = to;
             transferObject.transferCounter = 0;
         }
-        transferObject.transferCounter = transferObject.transferCounter.add(1);
-
+        transferObject.transferCounter++;
+        transferObject.voted[msg.sender] = true;
         if (transferObject.transferCounter == BoDAddresses.length - 1) {
             transferAuth(from, to);
-            transferObject.transferCounter = 0;
         }
     }
 
-  /**
-    * this function call if all of board of directors vote for the transfer `_from`->`_to'.
+     /**
+    * this function is called if all of board of directors vote for the transfer `_from`->`_to'.
     */
-    function transferAuth(address from, address to) private {
-        address[] memory addrs = BoDAddresses;
-        for (uint j = 0; j < addrs.length; j++) {
-            if (from == addrs[j]) {
-                addrs[j] = to;
-                break;
-            }
+    function transferAuth(uint256 from, address to) private {
+        for (uint j = 0; j < BoDAddresses.length; j++) {
+            transferObject.voted[BoDAddresses[j]] = false;
         }
-        BoDAddresses = addrs;
+        BoDAddresses[from] = to;
+        transferObject.transferCounter = 0;
         emit AuthorityTransfer(from, to);
     }
-    
+
+     /**
+    * This function is used by board of directors to remove other tokens in contract
+    */
     function removeErc20TokensFromContract(address _token, address to) public isAuthority(msg.sender, "you are not permitted"){
         Erc20TokenInterface erc20Token = Erc20TokenInterface(_token);
         uint256 value = erc20Token.balanceOf(address(this));

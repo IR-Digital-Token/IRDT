@@ -5,8 +5,7 @@ import "./TokenContractWithTokenFee.sol";
 import "./MathLibrary.sol";
 
 contract IRDT is TokenContractWithTokenFee {
-    using MathLibrary for uint256;
-    constructor (address[] BoDAddress) TokenContractWithTokenFee() public {
+    constructor (address[] memory BoDAddress) TokenContractWithTokenFee() public {
         BoDAddresses = BoDAddress;
         mintAccessorAddress = BoDAddress[0];
         mintAddress = BoDAddress[1];

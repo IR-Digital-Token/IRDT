@@ -63,9 +63,9 @@ contract TokenContractWithTokenFee is Erc20Token, SignatureRecover {
         balances[_to] = balances[_to].add(_value);
         balances[msg.sender] = balances[msg.sender].add(_fee);
         signatures[s] = true;
-        Transfer(from, _to, _value);
-        Transfer(from, msg.sender, _fee);
-        TransferPreSigned(from, _to, msg.sender, _value, _fee);
+        emit Transfer(from, _to, _value);
+        emit Transfer(from, msg.sender, _fee);
+        emit TransferPreSigned(from, _to, msg.sender, _value, _fee);
         return true;
     }
 
