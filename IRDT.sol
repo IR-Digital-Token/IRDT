@@ -7,7 +7,7 @@ import "./TokenContractWithTokenFee.sol";
  * Website: IRDT.io
  **/
 contract IRDT is TokenContractWithTokenFee {
-    constructor (address[] BoDAddress, address[] accessors) TokenContractWithTokenFee() public {
+    constructor (address[] BoDAddress, address[] accessors) public {
         BoDAddresses = BoDAddress;
         mintAccessorAddress = accessors[0];
         mintDestChangerAddress = accessors[1];

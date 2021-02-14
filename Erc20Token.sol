@@ -7,10 +7,10 @@ import "./MathLibrary.sol";
 contract Erc20Token is Erc20TokenInterface, BlackList {
     using MathLibrary for uint256;
     
-    constructor() Ownable() internal {
-        balances[mintAddress] = 150_000_0000;
-        totalSupply_ = 150_000_0000;
-        emit Transfer(address(0), mintAddress, 150_000_0000);
+    constructor() internal {
+        balances[mintAddress] = 1500000000;
+        totalSupply_ = 1500000000;
+        emit Transfer(address(0), mintAddress, 1500000000);
         name = "IR Digital Token";
         symbol = "IRDT";
         decimals = 4;
@@ -102,7 +102,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     * Emits a {Transfer} event with `to` set to the zero address.
     *
     * Requirements:
-    * - `amount` cannot be the zero.
+    * - `amount` cannot be less than zero.
     * - `amount` cannot be more than sender(caller)'s balance.
     */
     function burn(uint256 amount) public {
@@ -117,7 +117,7 @@ contract Erc20Token is Erc20TokenInterface, BlackList {
     * sender(caller) create a 'value' token mint request.
     *
     * Requirement:
-    * - sender(Caller) should be in the board of directors of contract
+    * - sender(Caller) should be mintAccessorAddress
     */
     function mint(uint256 value) public {
         require(msg.sender == mintAccessorAddress,"you are not permitted to create mint request");
