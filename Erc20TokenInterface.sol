@@ -1,14 +1,23 @@
 pragma solidity ^0.4.0;
 
-import "./TokenContractUtils.sol";
 
-contract Erc20TokenInterface is TokenContractUtils {
+contract Erc20TokenInterface {
     mapping(address => uint256) internal balances;
     mapping(address => mapping(address => uint256)) internal allowances;
     uint256 internal totalSupply_;
     string public name;
     string public symbol;
     uint8 public decimals;
+
+    modifier smallerOrLessThan(uint256 _value1, uint256 _value2, string errorMessage) {
+        require(_value1 <= _value2, errorMessage);
+        _;
+    }
+
+    modifier validAddress(address _address, string errorMessage) {
+        require(_address != address(0), errorMessage);
+        _;
+    }
 
     function totalSupply() public view returns (uint256) {
         return totalSupply_;
